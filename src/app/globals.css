@@ -1,26 +1,51 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* GovForge design tokens: an "audit ledger" palette — paper, ink, moss.
+   Risk colors are reserved for risk levels only. */
+@theme {
+  --color-paper: #f3efe6;
+  --color-ink: #16201c;
+  --color-moss: #2f5d4a;
+  --color-brass: #b07a2a; /* "AI draft" labels */
+  --color-risk-high: #a3352b;
+  --color-risk-medium: #b0761f;
+  --color-risk-low: #3d6b4f;
+
+  --font-display: var(--font-display), Georgia, serif;
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer components {
+  .field {
+    @apply w-full border-0 border-b border-ink/25 bg-transparent px-0 py-2 text-ink outline-none transition-colors;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  .field:focus {
+    @apply border-moss;
+    box-shadow: 0 1px 0 0 var(--color-moss);
+  }
+  .btn-primary {
+    @apply bg-ink px-5 py-3 text-sm font-medium tracking-wide text-paper transition-all duration-150;
+  }
+  .btn-primary:hover:not(:disabled) {
+    @apply bg-moss;
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .btn-primary:disabled {
+    @apply cursor-wait opacity-60;
+  }
+  .btn-ghost {
+    @apply border border-ink/20 px-3 py-1.5 text-ink/80 transition-colors hover:border-ink hover:text-ink;
+  }
+  .ledger-lines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      currentColor 0,
+      currentColor 1px,
+      transparent 1px,
+      transparent 32px
+    );
+  }
 }
