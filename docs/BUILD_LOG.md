@@ -51,3 +51,55 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 - Hypothesis-driven development: treat beliefs as testable bets, each with a way to prove it wrong.
 - Riskiest assumption: test first the belief that would sink the product if false.
 - Build to learn vs. build to scale: this version exists to generate evidence, not to be production-ready for thousands of users.
+
+---
+
+## Nov 20, 2026 — Stage 2: Requirements
+**What we did**
+- Turned the 3 user stories into tickets with acceptance criteria and failure cases ([tickets.md](tickets.md)), plus one shared definition of done.
+- Caught 2 requirement gaps while writing tickets: (1) the PRD requires sign-in but no story covered it → added **T0 Sign-in** as an enabler ticket; (2) the PRD lists "edit" as a Must but only "add" had a story → added an edit criterion to T1.
+- Added one criterion beyond the stories: an AI result that isn't Low/Medium/High is treated as a failure, never shown.
+
+**Decisions**
+- Build order T0 → T1 → T2 → T3, based on dependencies.
+
+**TPM concepts**
+- Ticket: one unit of work small enough to build, test and ship on its own.
+- Acceptance criteria: testable pass/fail conditions, written as Given/When/Then.
+- Definition of done: the checklist every ticket must meet, beyond "the code runs."
+- Enabler ticket: work no user asks for but every story depends on (here, sign-in).
+- Gap analysis: checking stories against the PRD to find requirements nobody owns.
+
+**What went wrong**
+- Nothing; the gaps were caught on paper, which is the cheapest place to catch them.
+
+---
+
+## Nov 20, 2026 — Stage 3: Design
+**What we did**
+- Made 4 design decisions, each with a decision record: Next.js full-stack (002), Supabase Postgres from day one (003), Claude API with Haiku 5.5 and structured JSON output (004), Supabase email + password with admin-created accounts (005).
+- Wrote [architecture.md](architecture.md): overview diagram, data model (4 tables), 6 REST endpoints with status codes, and environment variables.
+
+**Decisions**
+- Chose Supabase over SQLite to avoid a forced migration at deploy, and because it covers sign-in and organization isolation.
+- Rejected Gemini's free tier because free-tier inputs may be used to improve Google's products — inconsistent with a privacy product whose users may paste sensitive details.
+- Stored `org_id` on every record despite one organization, so the database enforces isolation and multi-org won't need a rebuild.
+- Kept every assessment (not just the latest), which makes "assessment history" nearly free later.
+
+**Concepts learned**
+- Frontend vs. backend: what runs in the browser vs. on the server.
+- API / REST: a set of requests (method + path) the frontend sends to the backend.
+- JSON: the structured text format data travels in.
+- Schema: the rules for tables, fields and types.
+- Environment variables: settings (like secret keys) kept outside the code.
+- Structured output: forcing the AI to reply in an exact JSON shape so code can validate it.
+- Authentication vs. authorization: who you are vs. what you can see.
+
+**TPM concepts**
+- Non-functional requirements: privacy and cost shaped the AI choice as much as quality did.
+- Build vs. buy: "bought" (used) Supabase Auth instead of building sign-in.
+- Deliberate scope control: no sign-up, password reset or roles, on purpose.
+- Designing for the next step cheaply: org_id and assessment history cost almost nothing now.
+
+**What went wrong**
+- Nothing.
