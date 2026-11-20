@@ -61,3 +61,11 @@ THE STAGES FOR TODAY (tell me when each stage starts; update BUILD_LOG.md at the
 If we run out of time, stop at the end of a stage, update BUILD_LOG.md, and tell me exactly where to resume.
 
 Start now: save this as CLAUDE.md, explain Stage 0 in a few sentences, and check that Node and Git are installed.
+---
+
+PORTFOLIO AND TRACKING (added Nov 20, 2026; see docs/decisions/001)
+- At each stage, teach the TPM concepts that fit that stage (not just technical ones), and name them in the build log.
+- Keep docs/TRACKER.md current: update the stage row (status, what was produced, TPM concepts, evidence links) and the portfolio checklist at the end of every stage.
+- The repo is the source of truth. At the end of each working day, draft a short summary with links for my "GovForge TPM Lifecycle Study Guide" doc.
+- Portfolio = README case study + a /case-study page in the deployed app (Stage 7), built from the repo docs.
+- Today's focus is developing and coding the app: keep Stages 1-2 brisk and spend the time on Stages 3-5.
