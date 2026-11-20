@@ -10,7 +10,7 @@ At-a-glance status of GovForge through the product lifecycle. Narrative detail l
 | 1 | Discovery recap | ✅ Done | Discovery status in build log | Hypothesis-driven development; riskiest assumption; evidence vs. assumption | [Build log](BUILD_LOG.md) |
 | 2 | Requirements | ✅ Done | 4 tickets (T0 enabler + 3 stories), definition of done, 2 requirement gaps caught | Acceptance criteria; definition of done; enabler tickets; dependencies; gap analysis | [Tickets](tickets.md) |
 | 3 | Design | ✅ Done | 4 decisions (stack, DB, AI, sign-in); architecture; data model; API spec | Trade-offs; build vs. buy; decision records; non-functional requirements (privacy, cost); deliberate scope control | [Architecture](architecture.md), [Decisions 002–005](decisions/) |
-| 4 | Build | 🟡 In progress (T0 ✅) | Tickets 1–3 shipped via branches and PRs | Incremental delivery; PR review; scope creep; dependencies | |
+| 4 | Build | 🟡 In progress (T0 ✅, T1 built, testing next) | Tickets 1–3 shipped via branches and PRs | Incremental delivery; PR review; scope creep; dependencies | |
 | 5 | Test | ⬜ Not started | Automated tests; AI eval (5 tools); outage simulation | Release criteria; evals; risk mitigation | |
 | 6 | Deploy | ⬜ Not started | Live app on hosting with hosted DB | Release management; go/no-go; rollback; environments | |
 | 7 | Operate | ⬜ Not started | 2 tracked events; 1 SQL metric; README + /case-study; LinkedIn draft | Instrumentation; leading vs. lagging metrics; retro; v2 roadmap | |

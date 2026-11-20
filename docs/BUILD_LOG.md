@@ -137,3 +137,18 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 
 **What went wrong**
 - 3 code bugs (above) and 2 setup slips; each took one diagnostic step once the real error was visible. Lesson: make errors visible to the builder early.
+
+---
+
+## Nov 20, 2026 — End of day: where to resume
+**State:** T0 merged. T1 (add/edit/view tools) is **built but not yet tested**, saved on branch `feat/t1-register` as a work-in-progress commit. The `tools` table SQL (`supabase/migrations/002_tools.sql`) has **not** been run in Supabase yet.
+
+**Resume here (next session, ~20 min, in the Claude chat as mentor):**
+1. `git checkout feat/t1-register`
+2. Run `supabase/migrations/002_tools.sql` in the Supabase SQL Editor.
+3. `npm run dev`, then test T1's 7 acceptance checks (empty state, required fields, keep input, add, duplicate, edit, 401).
+4. Commit, PR, merge.
+
+**Then switch to Claude Code for T2 onward:** install (`curl -fsSL https://claude.ai/install.sh | bash`), `cd ~/Desktop/GovForge`, `claude`, and start with: "Read CLAUDE.md, docs/TRACKER.md, docs/tickets.md, docs/architecture.md and the end of docs/BUILD_LOG.md. T0 and T1 are merged. Start T2 on branch feat/t2-assessment. Plan first and wait for my approval."
+
+**Honest attribution so far:** discovery, requirements, design, T0 and T1 built step by step with Claude (chat) as mentor; T2 onward to be built by directing Claude Code.
