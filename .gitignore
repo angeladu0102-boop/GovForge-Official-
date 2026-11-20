@@ -1,13 +1,18 @@
 # Secrets: never commit these
 .env
-.env.local
 .env*.local
+.env.*
+!.env.example
 
 # Dependencies and build output (regenerated, not source)
-node_modules/
-.next/
-out/
-dist/
+/node_modules
+/.next/
+/out/
+/build
+/coverage
+*.tsbuildinfo
+next-env.d.ts
+.vercel
 
 # Local database files
 *.db
@@ -16,3 +21,7 @@ dist/
 # Mac / editor clutter
 .DS_Store
 .vscode/
+*.pem
+
+# Debug logs
+npm-debug.log*
