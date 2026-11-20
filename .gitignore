@@ -1,0 +1,18 @@
+# Secrets: never commit these
+.env
+.env.local
+.env*.local
+
+# Dependencies and build output (regenerated, not source)
+node_modules/
+.next/
+out/
+dist/
+
+# Local database files
+*.db
+*.sqlite
+
+# Mac / editor clutter
+.DS_Store
+.vscode/
