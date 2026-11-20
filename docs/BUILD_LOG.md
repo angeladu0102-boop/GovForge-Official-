@@ -103,3 +103,37 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 
 **What went wrong**
 - Nothing.
+
+---
+
+## Nov 20, 2026 — Stage 4: Build · Scaffold + T0 Sign-in
+**What we did**
+- Scaffolded Next.js 16 (TypeScript, Tailwind) with Supabase, Claude SDK and zod; merged via PR #1.
+- Built T0: Supabase email/password sign-in, a `proxy.ts` gatekeeper (pages → /login, API → 401), `organizations` + `members` tables with row-level security, and `/api/me`. Merged via PR #2.
+- All 6 T0 acceptance criteria passed by hand, including `curl -i /api/me` → `401 Unauthorized`.
+
+**Bugs found in acceptance testing (and fixed)**
+1. *Prerender error:* Next.js tried to pre-build the "who's signed in" header, which checks the current time. Fix: `await connection()` marks it as request-time only.
+2. *Redirect loop:* a signed-in user with no organization bounced between the register (→ /login) and the gatekeeper (→ /). Each rule was correct alone; together they looped. Fix: show "Your account isn't linked to an organization yet" instead of redirecting.
+3. *Missing table grants:* the member row existed, but signed-in users had no permission to query the table at all, so the app saw "no membership." Fix: `grant select … to authenticated`, now saved in the migration.
+- Also: recreating a user deleted their `members` row (by design, cascade), and renaming a column header in the Table Editor (instead of a cell) broke a query — both diagnosed by reading the exact Postgres error code (42703 = column does not exist).
+
+**Decisions**
+- Kept real sign-in (option A); a one-click "Try the demo" account is planned for Stage 6 interview demos instead of removing passwords, which would have broken ownership and data isolation.
+
+**Concepts learned**
+- Branch / pull request / merge / pull: the cycle every ticket follows.
+- Dependencies and package-lock.json: outside code the app relies on, pinned to exact versions.
+- Dev server and localhost; long-running vs. finishing commands.
+- Migration: a versioned script that changes the database structure.
+- Grants vs. row-level security: "may you touch this table?" vs. "which rows may you see?"
+- Server action and data access layer.
+- Transactions: a multi-statement query fails all-or-nothing.
+
+**TPM concepts**
+- Acceptance testing catches integration bugs that each piece alone wouldn't show.
+- Generic errors for users, detailed logs for the team (security vs. debuggability trade-off).
+- Scope pressure ("just remove the password") handled with options, not a silent shortcut.
+
+**What went wrong**
+- 3 code bugs (above) and 2 setup slips; each took one diagnostic step once the real error was visible. Lesson: make errors visible to the builder early.
