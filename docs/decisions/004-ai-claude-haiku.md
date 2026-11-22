@@ -1,6 +1,6 @@
 # Decision 004: AI provider and model — Claude API (Haiku 5.5) with structured JSON output
 
-**Date:** Nov 20, 2026 · **Stage:** 3 Design · **Status:** Decided
+**Date:** Nov 20, 2026 · **Stage:** 3 Design · **Status:** Decided · Amended by [006](006-risk-floor-rules.md) (risk level is no longer set by the AI alone)
 
 ## Decision
 Use the Claude API with Claude Haiku 5.5 for risk assessments, called only from the backend, with structured JSON output validated before saving.

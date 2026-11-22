@@ -152,3 +152,16 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 **Then switch to Claude Code for T2 onward:** install (`curl -fsSL https://claude.ai/install.sh | bash`), `cd ~/Desktop/GovForge`, `claude`, and start with: "Read CLAUDE.md, docs/TRACKER.md, docs/tickets.md, docs/architecture.md and the end of docs/BUILD_LOG.md. T0 and T1 are merged. Start T2 on branch feat/t2-assessment. Plan first and wait for my approval."
 
 **Honest attribution so far:** discovery, requirements, design, T0 and T1 built step by step with Claude (chat) as mentor; T2 onward to be built by directing Claude Code.
+
+---
+
+## Nov 23, 2026 — T1 tested and merged; tech spec written
+**Tech spec (Stage 3, revisited):** wrote [tech-spec-ai-assessment.md](tech-spec-ai-assessment.md) for T2 before building it. 8 decisions [D1–D8]; D1 became [Decision 006](decisions/006-risk-floor-rules.md) (code-enforced risk floor, amends 004). Spec also widened T2's "out of date" rule from data types to any input sent to the AI.
+
+**T1 test results:** 7 acceptance checks run by hand. 6 passed first time. **Check 5 (duplicate name) failed:** "Chat GPT" was accepted alongside "ChatGPT" because the rule only ignored capitals.
+- **Root cause:** requirement gap. The ticket said "duplicate name" without defining "same."
+- **Fix:** names compare after ignoring capitals, spaces and punctuation; enforced in the app (friendly 409 + link) and in the database (generated `name_key` column + unique index, migration `002b_tools_name_key.sql`).
+- **Re-test:** 5a (add "Chat GPT") and 5b (rename to "chatgpt") both warn with an "Open it" link. ✅
+- **Concept:** testing against acceptance criteria catches what code review doesn't; defence in depth (app check + database constraint).
+
+**Where to resume:** T1 merged. Next: T2 in Claude Code on `feat/t2-assessment`, following the tech spec.

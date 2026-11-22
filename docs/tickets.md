@@ -55,7 +55,8 @@ A ticket is done only when **all** of these are true:
 **Acceptance criteria**
 - Given a saved tool, when I click Assess, then within 30 seconds I see Low/Medium/High, 3–5 reasons tied to what I entered, and 3–5 recommended controls.
 - The result is labeled "AI draft, review before relying on it" with the date and the inputs used.
-- If I edit the tool's data types and save, the old assessment is marked "Out of date, re-assess".
+- If I edit any detail sent to the AI (name, vendor, purpose or data types) and save, the old assessment is marked "Out of date, re-assess". *(Widened from "data types" in the tech spec, Nov 23.)*
+- The risk level is never below the floor set by the data types (Decision 006); if the floor raised it, the result says why.
 - A reviewer can override the risk level with a required reason; the override, reason, reviewer and date are shown alongside the AI's original level.
 
 **Failure cases**
@@ -65,7 +66,7 @@ A ticket is done only when **all** of these are true:
 - AI down: "Assessment unavailable, your tool is saved, try again."
 - AI returns anything other than Low/Medium/High: treated as a failure, never shown or saved.
 
-**Technical constraints:** AI call happens on the backend only; API key in `.env.local`; AI output validated against a schema before saving.
+**Technical constraints:** Full design in [tech-spec-ai-assessment.md](tech-spec-ai-assessment.md). AI call happens on the backend only; API key in `.env.local`; AI output validated against a schema before saving.
 **Out of scope:** assessment history (Should), approval workflow (Won't).
 
 ---

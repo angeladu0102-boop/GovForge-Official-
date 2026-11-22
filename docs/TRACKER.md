@@ -9,15 +9,16 @@ At-a-glance status of GovForge through the product lifecycle. Narrative detail l
 | 0 | Setup | ✅ Done | Repo, CLAUDE.md, PRD v0.1, .gitignore, build log | Single source of truth; docs as code; secrets management | [Repo](https://github.com/angeladu0102-boop/GovForge-Official-), [PRD](PRD.md), [Decision 001](decisions/001-tracker-and-portfolio-format.md) |
 | 1 | Discovery recap | ✅ Done | Discovery status in build log | Hypothesis-driven development; riskiest assumption; evidence vs. assumption | [Build log](BUILD_LOG.md) |
 | 2 | Requirements | ✅ Done | 4 tickets (T0 enabler + 3 stories), definition of done, 2 requirement gaps caught | Acceptance criteria; definition of done; enabler tickets; dependencies; gap analysis | [Tickets](tickets.md) |
-| 3 | Design | ✅ Done | 4 decisions (stack, DB, AI, sign-in); architecture; data model; API spec | Trade-offs; build vs. buy; decision records; non-functional requirements (privacy, cost); deliberate scope control | [Architecture](architecture.md), [Decisions 002–005](decisions/) |
-| 4 | Build | 🟡 In progress (T0 ✅, T1 built, testing next) | Tickets 1–3 shipped via branches and PRs | Incremental delivery; PR review; scope creep; dependencies | |
+| 3 | Design | ✅ Done | 4 decisions (stack, DB, AI, sign-in); architecture; data model; API spec; **tech spec for AI assessment (Nov 23) with 8 decisions incl. Decision 006** | Trade-offs; build vs. buy; decision records; non-functional requirements (privacy, cost); deliberate scope control | [Architecture](architecture.md), [Tech spec](tech-spec-ai-assessment.md), [Decisions 002–006](decisions/) |
+| 4 | Build | 🟡 In progress (T0 ✅, T1 ✅, T2 next) | Tickets 1–3 shipped via branches and PRs | Incremental delivery; PR review; scope creep; dependencies | |
 | 5 | Test | ⬜ Not started | Automated tests; AI eval (5 tools); outage simulation | Release criteria; evals; risk mitigation | |
 | 6 | Deploy | ⬜ Not started | Live app on hosting with hosted DB | Release management; go/no-go; rollback; environments | |
 | 7 | Operate | ⬜ Not started | 2 tracked events; 1 SQL metric; README + /case-study; LinkedIn draft | Instrumentation; leading vs. lagging metrics; retro; v2 roadmap | |
 
 ## Portfolio evidence checklist
 - [x] PRD with hypotheses marked as assumptions
-- [x] Decision records (5)
+- [x] Decision records (6)
+- [x] Tech spec (AI assessment)
 - [x] Tickets with acceptance criteria
 - [x] Architecture diagram, data model, API spec
 - [ ] Merged pull requests per ticket

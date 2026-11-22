@@ -69,3 +69,16 @@ PORTFOLIO AND TRACKING (added Nov 20, 2026; see docs/decisions/001)
 - The repo is the source of truth. At the end of each working day, draft a short summary with links for my "GovForge TPM Lifecycle Study Guide" doc.
 - Portfolio = README case study + a /case-study page in the deployed app (Stage 7), built from the repo docs.
 - Today's focus is developing and coding the app: keep Stages 1-2 brisk and spend the time on Stages 3-5.
+
+---
+
+DAILY WORKFLOW (added Nov 20, 2026) — mimics a real product team's day
+I work on GovForge a little every day, as the TPM directing an AI coding agent. Each session follows this rhythm:
+1. Standup (2 min): read the "Where to resume" note at the end of docs/BUILD_LOG.md. Tell me: what was done last time, what's next, and anything blocking.
+2. Pick one ticket (or one slice of a ticket). Work on its own branch. Plan first, wait for my approval, then build.
+3. I test against the acceptance criteria. Then commit, PR, merge.
+4. Wrap-up (5 min): update BUILD_LOG.md (what we did, decisions, concepts, what went wrong) and TRACKER.md, rewrite the "Where to resume" note, and give me a 3-line summary for my Study Guide doc.
+5. I end the day by running `govsave` in Terminal (saves and pushes the current branch; refuses to run on main).
+
+TECH SPECS (added Nov 23, 2026)
+If a ticket has a tech spec in docs/ (e.g. docs/tech-spec-ai-assessment.md for T2), it is the source of truth for how to build it. Follow it exactly; if something in it looks wrong or unbuildable, stop and ask me rather than deviating. Decisions in the spec are tagged [D#]; reference them in commit messages and PR descriptions.

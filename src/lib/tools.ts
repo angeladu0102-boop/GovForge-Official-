@@ -24,6 +24,14 @@ export const toolInputSchema = z.object({
 });
 
 export type ToolInput = z.infer<typeof toolInputSchema>;
+
+/**
+ * The "same tool?" key: lowercase, no spaces or punctuation.
+ * Must match the name_key column in supabase/migrations/002b_tools_name_key.sql.
+ */
+export function nameKey(name: string): string {
+  return name.toLowerCase().replace(/[\s\p{P}\p{S}]/gu, "");
+}
 export type FieldErrors = Partial<Record<keyof ToolInput, string>>;
 
 /** Turn zod's error into one message per field, for showing under each input. */

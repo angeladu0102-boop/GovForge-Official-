@@ -1,6 +1,6 @@
 # GovForge — Architecture (V1)
 
-Decisions behind this: [002 stack](decisions/002-stack-nextjs.md) · [003 database](decisions/003-database-supabase.md) · [004 AI](decisions/004-ai-claude-haiku.md) · [005 sign-in](decisions/005-signin-supabase-auth.md)
+Decisions behind this: [002 stack](decisions/002-stack-nextjs.md) · [003 database](decisions/003-database-supabase.md) · [004 AI](decisions/004-ai-claude-haiku.md) · [005 sign-in](decisions/005-signin-supabase-auth.md) · [006 risk floor](decisions/006-risk-floor-rules.md) · [Tech spec: AI assessment](tech-spec-ai-assessment.md)
 
 ## Overview
 
@@ -72,7 +72,7 @@ flowchart LR
 | overridden_by | uuid | → members.user_id |
 | overridden_at | timestamp | |
 
-A tool's **current assessment** is its newest row. It's **Out of date** when `assessment.created_at < tool.data_types_changed_at`. Keeping old rows means "assessment history" (a Should) is nearly free later.
+A tool's **current assessment** is its newest row. It's **Out of date** when the tool's current name, vendor, purpose or data types differ from `inputs_snapshot` (tech spec 3.6; `data_types_changed_at` no longer needed). Extra columns (`ai_level`, `floor_level`, `floor_reason`, `prompt_version`, `duration_ms`) are in the [tech spec](tech-spec-ai-assessment.md#38-data-model-changes-assessments-migration-003_assessmentssql). Keeping old rows means "assessment history" (a Should) is nearly free later.
 
 *Added in Stage 7:* an `events` table for tracking (assessment created, register viewed).
 
