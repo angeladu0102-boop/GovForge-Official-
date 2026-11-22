@@ -1,0 +1,33 @@
+// Database reads/writes for tools, shared by API routes and pages.
+import { createClient } from "@/lib/supabase/server";
+import { TOOL_COLUMNS, nameKey, rowToTool, type Tool } from "@/lib/tools";
+
+export async function listTools(): Promise<Tool[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("tools")
+    .select(TOOL_COLUMNS)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(`listTools: ${error.message}`);
+  return (data ?? []).map(rowToTool);
+}
+
+export async function getTool(id: string): Promise<Tool | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("tools")
+    .select(TOOL_COLUMNS)
+    .eq("id", id)
+    .maybeSingle();
+  if (error && error.code !== "22P02") throw new Error(`getTool: ${error.message}`); // 22P02 = not a valid id
+  return data ? rowToTool(data) : null;
+}
+
+/** Find a tool in this org with the same name, ignoring capitals, spaces and punctuation. */
+export async function findToolByName(name: string, excludeId?: string): Promise<{ id: string; name: string } | null> {
+  const supabase = await createClient();
+  let query = supabase.from("tools").select("id, name").eq("name_key", nameKey(name)).limit(1);
+  if (excludeId) query = query.neq("id", excludeId);
+  const { data } = await query;
+  return data?.[0] ?? null;
+}
