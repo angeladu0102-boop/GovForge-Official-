@@ -290,11 +290,31 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 
 ---
 
+## Nov 23, 2026 — B1 fix: "Add tool" form always starts blank
+**What we did:** Fixed backlog bug B1 on `fix/b1-blank-form`. Root cause confirmed in the Next.js 16 docs: with `cacheComponents` on, Next.js hides recently visited pages (React `<Activity>`, up to 3) instead of removing them, so form input survives navigation. The form now clears itself when the "Add tool" page is hidden (edit form unchanged). Also folded the duplicate end-of-session rule in CLAUDE.md into Daily Workflow step 4.
+
+**Decisions**
+- "Always blank" includes Cancel: an unsaved draft is discarded. That's what Cancel means, and it keeps the reset simple.
+- Edit form left alone; a possible edit-mode version logged as B6 (verify before fixing).
+
+**Concepts learned**
+- Framework defaults can cause bugs: a performance feature (keeping pages alive) changed form behavior.
+- Root cause vs. symptom: confirm the cause in the docs before writing the fix.
+
+**TPM concepts**
+- Bug triage to fix: backlog item → plan → approval → branch → PR, same process as a ticket.
+- Scope discipline: a related issue found mid-fix gets logged (B6), not silently built.
+
+**What went wrong**
+- Nothing.
+
+---
+
 ## Nov 23, 2026 — Where to resume
-**State:** T3 built, tested and pushed on `feat/t3-register`; PR ready to open, **not merged**. All three V1 stories (T1–T3) are built.
+**State:** B1 fix committed and pushed on `fix/b1-blank-form`; PR to open and merge (GitHub CLI not installed, so use the browser). T1–T3 merged in `main`.
 
 **Resume here:**
-1. Open and merge the T3 PR on GitHub, then `git checkout main && git pull`.
-2. If not done yet: branch protection on `main` (from the T2 incident).
-3. Triage the [backlog](backlog.md): B1 (blank "Add tool" form) is a bug and should be next; B2 (delete) needs a decision first.
-4. Then Stage 5 (Test): 60 s timeout simulation, an eval case that triggers the floor, a two-organization check, `docs/test-results.md`.
+1. Open and merge the B1 PR, then `git checkout main && git pull`.
+2. Decide B2 (delete): hard delete vs. archive (audit history). Write a decision record.
+3. Quick wins if wanted: B3 tool count, B4 visible checkboxes; B6 verify edit form.
+4. Stage 5 (Test): 60 s timeout simulation, an eval case that triggers the floor, a two-organization check, `docs/test-results.md`.
