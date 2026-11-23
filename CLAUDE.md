@@ -82,3 +82,8 @@ I work on GovForge a little every day, as the TPM directing an AI coding agent. 
 
 TECH SPECS (added Nov 23, 2026)
 If a ticket has a tech spec in docs/ (e.g. docs/tech-spec-ai-assessment.md for T2), it is the source of truth for how to build it. Follow it exactly; if something in it looks wrong or unbuildable, stop and ask me rather than deviating. Decisions in the spec are tagged [D#]; reference them in commit messages and PR descriptions.
+
+GIT SAFETY (added Nov 23, 2026, after the T2 process incident)
+- Never commit or push on `main`. Before every commit, run `git branch --show-current`; if it says `main`, stop and tell me.
+- All work reaches `main` only through a pull request that I merge.
+- If the branch changed unexpectedly mid-task (someone else ran git checkout), stop and tell me before doing anything else.

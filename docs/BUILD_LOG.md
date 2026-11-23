@@ -233,9 +233,68 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 ---
 
 ## Nov 23, 2026 — Where to resume
-**State:** T2 built, tested (unit 45/45, acceptance 8/8, eval ship gate PASS) and pushed on `feat/t2-assessment`; PR open, **not yet merged**.
+**State:** T2 built and tested (unit 45/45, acceptance 8/8, eval ship gate PASS). ⚠️ It reached `main` **without a PR** — see the process incident below.
 
 **Resume here:**
-1. Merge the T2 PR on GitHub, then `git checkout main && git pull`.
+1. Turn on branch protection for `main` (see incident).
 2. Start T3 (view the register) on `feat/t3-register`: plan first, wait for approval.
 3. Cleanup noted for later: `tools.data_types_changed_at` is unused since spec 3.6.
+
+### Process incident: T2 skipped PR review (Nov 23, 11:05)
+- **What happened:** `git checkout main` ran in my Commands tab while Claude Code still had T2's changes uncommitted. Git carried the uncommitted changes onto `main`, Claude Code committed there and pushed. T2 landed on `main` directly; `feat/t2-assessment` on GitHub is empty.
+- **Impact:** none on the product (T2 had already passed all tests and the eval). The gap is process: no PR, so no review record for T2.
+- **Root cause:** two "writers" in one folder at once (me switching branches, the agent committing), and nothing on GitHub stopping a direct push to `main`.
+- **Decision:** don't rewrite history (risky, no benefit). Log it honestly and add a control.
+- **Fix:** branch protection on `main` (require a pull request before merging), so it can't happen again, whoever or whatever is pushing.
+- **Concepts:** process controls beat good intentions; blameless incident write-up (what, impact, root cause, fix).
+
+---
+
+## Nov 23, 2026 — Stage 4: Build · T3 View the register
+**What we did**
+- Plan first in plan mode ([T3 plan](plans/t3-plan.md)): files, order, and how each acceptance criterion and failure case maps to code. Scope kept to T3 (no filters, no CSV export).
+- Register now shows **Risk** and **Last assessed** for every tool, sorted High → Medium → Low → no level, with name A–Z within a group. The reviewer's override counts when there is one.
+- Labels: "Not assessed", "Not enough info", an "Out of date" tag, and "Reviewer override · AI/rules: X".
+- Tools and each tool's newest assessment are fetched in parallel and matched up in code; no database change. `GET /api/tools` returns the same sorted register.
+- One shared risk badge for the register and the T2 assessment panel.
+- Followed the new GIT SAFETY rules: checked the branch before every commit, and confirmed the pushed branch had commits that `main` didn't before opening the PR.
+
+**Decisions (plan review)**
+- A. One query for assessments, newest per tool picked in code: no migration; revisit at large scale (backlog K1).
+- B. An Out-of-date row keeps its last level for sorting, so a risky tool is never pushed down by an edit; "Not enough info" sorts with Not assessed.
+
+**Test results**
+- Unit tests: **52/52 pass** (7 new: sort order, A–Z within a group, override moves the row, out-of-date High stays on top, not-enough-info at the bottom, newest assessment wins).
+- Manual checklist (6 test tools, Aster–Fern): **all checks passed** — columns, labels, sort, out of date (and not out of date when only the team changes), override moves the row and a re-assess clears it, register loads with the AI down, signed-out → sign-in page and `401`.
+- Skipped with a reason: empty state (unchanged since T1); other organization's data (protected by RLS; two-org test planned for Stage 5).
+
+**Self-review before testing** — every acceptance criterion had code behind it; 3 known limits logged rather than fixed (backlog K1–K3).
+
+**Feedback from testing → [backlog](backlog.md)** (not built: outside T3's scope)
+- B1 Bug: "Add tool" form shows the previous tool's details instead of starting blank (T1).
+- B2 Delete tools from the register (scope change: hard delete vs. archive needs a decision because of audit history).
+- B3 Show the number of tools · B4 visible empty checkboxes for data types · B5 whole row clickable with hover highlight.
+
+**Concepts learned**
+- Joining data in code: fetch two lists in parallel and match them up, instead of one query per row.
+- Pure functions for business rules (sort, labels) so they're unit-testable.
+- Query limits: databases and APIs cap rows per request; know the cap before it bites.
+
+**TPM concepts**
+- Self-review against acceptance criteria before handing over for testing.
+- Backlog triage: separating bugs, scope changes and quick wins; a scope change (delete) gets a decision, not a silent add.
+- Process control in action: the T2 incident's fix (branch checks, verify the PR has a diff) applied on the very next ticket.
+
+**What went wrong**
+- Nothing blocking. GitHub CLI still not installed, so the PR is opened in the browser.
+
+---
+
+## Nov 23, 2026 — Where to resume
+**State:** T3 built, tested and pushed on `feat/t3-register`; PR ready to open, **not merged**. All three V1 stories (T1–T3) are built.
+
+**Resume here:**
+1. Open and merge the T3 PR on GitHub, then `git checkout main && git pull`.
+2. If not done yet: branch protection on `main` (from the T2 incident).
+3. Triage the [backlog](backlog.md): B1 (blank "Add tool" form) is a bug and should be next; B2 (delete) needs a decision first.
+4. Then Stage 5 (Test): 60 s timeout simulation, an eval case that triggers the floor, a two-organization check, `docs/test-results.md`.

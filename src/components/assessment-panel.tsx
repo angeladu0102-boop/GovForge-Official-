@@ -6,6 +6,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { LocalDate } from "@/components/local-date";
+import { RiskBadge } from "@/components/risk-badge";
 import { effectiveLevel, type Assessment } from "@/lib/assessment";
 import { RISK_LEVELS, rank, type RiskLevel } from "@/lib/risk-rules";
 
@@ -159,7 +160,7 @@ function CompleteResult({ assessment: a, onOverridden, flash }: {
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <LevelBadge level={shown} />
+        <RiskBadge level={shown} />
         {a.override && <span className="text-sm text-ink/60">Reviewer override (AI/rules said {a.riskLevel})</span>}
       </div>
 
@@ -305,20 +306,6 @@ function OverrideForm({ assessment, onDone, onCancel }: {
         )}
       </div>
     </form>
-  );
-}
-
-const BADGE: Record<RiskLevel, string> = {
-  High: "border-risk-high bg-risk-high/10 text-risk-high",
-  Medium: "border-risk-medium bg-risk-medium/10 text-risk-medium",
-  Low: "border-risk-low bg-risk-low/10 text-risk-low",
-};
-
-function LevelBadge({ level }: { level: RiskLevel }) {
-  return (
-    <span className={`border px-3 py-1 font-mono text-sm uppercase tracking-[0.14em] ${BADGE[level]}`}>
-      {level} risk
-    </span>
   );
 }
 

@@ -1,17 +1,18 @@
 // /api/tools
-//   GET  → 200 list of tools in your organization
+//   GET  → 200 the register: tools in your organization with their current assessment,
+//          sorted High → Medium → Low → not assessed (T3)
 //   POST → 201 created | 400 invalid input | 409 duplicate name | 401 not signed in
 import { NextResponse } from "next/server";
 import { getCurrentMember } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { TOOL_COLUMNS, rowToTool, toFieldErrors, toolInputSchema } from "@/lib/tools";
-import { findToolByName, listTools } from "@/lib/tools-db";
+import { findToolByName, listRegister } from "@/lib/tools-db";
 
 export async function GET() {
   const member = await getCurrentMember();
   if (!member) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
 
-  const tools = await listTools();
+  const tools = await listRegister();
   return NextResponse.json({ tools }, { status: 200 });
 }
 
