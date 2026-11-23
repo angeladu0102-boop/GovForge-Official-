@@ -233,9 +233,17 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 ---
 
 ## Nov 23, 2026 — Where to resume
-**State:** T2 built, tested (unit 45/45, acceptance 8/8, eval ship gate PASS) and pushed on `feat/t2-assessment`; PR open, **not yet merged**.
+**State:** T2 built and tested (unit 45/45, acceptance 8/8, eval ship gate PASS). ⚠️ It reached `main` **without a PR** — see the process incident below.
 
 **Resume here:**
-1. Merge the T2 PR on GitHub, then `git checkout main && git pull`.
+1. Turn on branch protection for `main` (see incident).
 2. Start T3 (view the register) on `feat/t3-register`: plan first, wait for approval.
 3. Cleanup noted for later: `tools.data_types_changed_at` is unused since spec 3.6.
+
+### Process incident: T2 skipped PR review (Nov 23, 11:05)
+- **What happened:** `git checkout main` ran in my Commands tab while Claude Code still had T2's changes uncommitted. Git carried the uncommitted changes onto `main`, Claude Code committed there and pushed. T2 landed on `main` directly; `feat/t2-assessment` on GitHub is empty.
+- **Impact:** none on the product (T2 had already passed all tests and the eval). The gap is process: no PR, so no review record for T2.
+- **Root cause:** two "writers" in one folder at once (me switching branches, the agent committing), and nothing on GitHub stopping a direct push to `main`.
+- **Decision:** don't rewrite history (risky, no benefit). Log it honestly and add a control.
+- **Fix:** branch protection on `main` (require a pull request before merging), so it can't happen again, whoever or whatever is pushing.
+- **Concepts:** process controls beat good intentions; blameless incident write-up (what, impact, root cause, fix).
