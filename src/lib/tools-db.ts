@@ -1,5 +1,7 @@
 // Database reads/writes for tools, shared by API routes and pages.
 import { createClient } from "@/lib/supabase/server";
+import { listLatestAssessments } from "@/lib/assessments-db";
+import { buildRegister, type RegisterRow } from "@/lib/register";
 import { TOOL_COLUMNS, nameKey, rowToTool, type Tool } from "@/lib/tools";
 
 export async function listTools(): Promise<Tool[]> {
@@ -10,6 +12,12 @@ export async function listTools(): Promise<Tool[]> {
     .order("created_at", { ascending: false });
   if (error) throw new Error(`listTools: ${error.message}`);
   return (data ?? []).map(rowToTool);
+}
+
+/** T3: every tool with its current assessment, sorted High → Medium → Low → no level. */
+export async function listRegister(): Promise<RegisterRow[]> {
+  const [tools, latest] = await Promise.all([listTools(), listLatestAssessments()]); // in parallel
+  return buildRegister(tools, latest);
 }
 
 export async function getTool(id: string): Promise<Tool | null> {

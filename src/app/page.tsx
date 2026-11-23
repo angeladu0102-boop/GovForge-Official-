@@ -2,8 +2,10 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { LocalDate } from "@/components/local-date";
+import { RiskBadge } from "@/components/risk-badge";
 import { getCurrentMember } from "@/lib/auth";
-import { listTools } from "@/lib/tools-db";
+import type { RegisterRisk } from "@/lib/register";
+import { listRegister } from "@/lib/tools-db";
 
 export default function Home() {
   return (
@@ -28,7 +30,7 @@ export default function Home() {
 async function Register() {
   const member = await getCurrentMember();
   if (!member) return null;
-  const tools = await listTools();
+  const tools = await listRegister(); // sorted High → Medium → Low → no level; never calls the AI
 
   if (tools.length === 0) {
     return (
@@ -48,6 +50,8 @@ async function Register() {
             <th className="py-3 pr-4 font-normal">Tool</th>
             <th className="py-3 pr-4 font-normal">Team</th>
             <th className="py-3 pr-4 font-normal">Owner</th>
+            <th className="py-3 pr-4 font-normal">Risk</th>
+            <th className="py-3 pr-4 font-normal">Last assessed</th>
             <th className="py-3 pr-4 font-normal">Added</th>
             <th className="py-3 font-normal">Last updated</th>
           </tr>
@@ -61,6 +65,10 @@ async function Register() {
               </td>
               <td className="py-4 pr-4 text-ink/70">{t.team ?? "—"}</td>
               <td className="py-4 pr-4 text-ink/70">{t.ownerName}</td>
+              <td className="py-4 pr-4"><RiskCell risk={t.risk} /></td>
+              <td className="py-4 pr-4 font-mono text-xs text-ink/60">
+                {t.risk.kind === "not_assessed" ? "—" : <LocalDate iso={t.risk.assessedAt} />}
+              </td>
               <td className="py-4 pr-4 font-mono text-xs text-ink/60"><LocalDate iso={t.createdAt} /></td>
               <td className="py-4 font-mono text-xs text-ink/60"><LocalDate iso={t.updatedAt} withTime /></td>
             </tr>
@@ -69,4 +77,23 @@ async function Register() {
       </table>
     </div>
   );
+}
+
+function RiskCell({ risk }: { risk: RegisterRisk }) {
+  if (risk.kind === "not_assessed") return <Muted>Not assessed</Muted>;
+  return (
+    <div className="flex flex-col items-start gap-1">
+      {risk.kind === "assessed" ? <RiskBadge level={risk.level} size="sm" /> : <Muted>Not enough info</Muted>}
+      {risk.kind === "assessed" && risk.overridden && (
+        <span className="text-xs text-ink/60">Reviewer override · AI/rules: {risk.ruleLevel}</span>
+      )}
+      {risk.outOfDate && (
+        <span className="border border-risk-medium/50 bg-risk-medium/10 px-1.5 text-[11px] text-ink">Out of date</span>
+      )}
+    </div>
+  );
+}
+
+function Muted({ children }: { children: React.ReactNode }) {
+  return <span className="whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.12em] text-ink/50">{children}</span>;
 }

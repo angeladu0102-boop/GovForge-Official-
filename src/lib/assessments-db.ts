@@ -2,6 +2,7 @@
 // Row-level security (migration 003) limits every query to the signed-in user's organization.
 import { createClient } from "@/lib/supabase/server";
 import { ASSESSMENT_COLUMNS, rowToAssessment, type Assessment, type AssessmentRow, type InputsSnapshot } from "@/lib/assessment";
+import { pickLatest, type AssessmentSummary } from "@/lib/register";
 import type { RiskLevel } from "@/lib/risk-rules";
 
 /** A tool's current assessment = its newest row (or null if never assessed). */
@@ -99,4 +100,28 @@ export async function setOverride(id: string, level: RiskLevel, reason: string, 
     .maybeSingle();
   if (error) throw new Error(`setOverride: ${error.code} ${error.message}`);
   return data ? rowToAssessment(data as unknown as AssessmentRow) : null;
+}
+
+/**
+ * T3 register: each tool's newest assessment, from ONE query (plan decision A).
+ * Summary columns only (no reasons/controls). Row-level security limits it to your org.
+ */
+export async function listLatestAssessments(): Promise<Map<string, AssessmentSummary>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("assessments")
+    .select("id, tool_id, status, risk_level, override_level, inputs_snapshot, created_at")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(`listLatestAssessments: ${error.message}`);
+  return pickLatest(
+    (data ?? []).map((r) => ({
+      id: r.id,
+      toolId: r.tool_id,
+      status: r.status,
+      riskLevel: r.risk_level,
+      overrideLevel: r.override_level,
+      inputsSnapshot: r.inputs_snapshot,
+      createdAt: r.created_at,
+    })),
+  );
 }
