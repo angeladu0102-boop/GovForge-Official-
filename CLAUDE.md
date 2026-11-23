@@ -87,3 +87,5 @@ GIT SAFETY (added Nov 23, 2026, after the T2 process incident)
 - Never commit or push on `main`. Before every commit, run `git branch --show-current`; if it says `main`, stop and tell me.
 - All work reaches `main` only through a pull request that I merge.
 - If the branch changed unexpectedly mid-task (someone else ran git checkout), stop and tell me before doing anything else.
+
+At the end of every session, update the "Where to resume" section at the bottom of docs/BUILD_LOG.md with: current branch/PR state, what's merged, and the next 3–4 steps. Overwrite the old section; keep it under 15 lines.
