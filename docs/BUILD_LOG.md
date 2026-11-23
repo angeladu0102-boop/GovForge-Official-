@@ -165,3 +165,77 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 - **Concept:** testing against acceptance criteria catches what code review doesn't; defence in depth (app check + database constraint).
 
 **Where to resume:** T1 merged. Next: T2 in Claude Code on `feat/t2-assessment`, following the tech spec.
+
+---
+
+## Nov 23, 2026 — Stage 4: Build · T2 AI risk assessment
+**How it was built:** first ticket built by directing **Claude Code** (an AI coding agent in the terminal) instead of the chat mentor. Flow: agent read the docs → wrote a [build plan](plans/t2-plan.md) mapping every spec decision [D1–D8] to code and flagging 8 unclear/risky spots → I approved with 3 decisions → agent built in 11 steps with checkpoints → I ran acceptance tests → commit + PR.
+
+**What we did**
+- Migration `003_assessments.sql`: assessments table with row-level security, check constraints (a complete assessment always has a level; "not enough information" never does), and a **column-level grant** so only the 4 override columns can ever be updated: the AI's result can't be edited after saving.
+- `POST /api/tools/{id}/assess`: thin-input check [D4] → floor from data types [D1, D5] → Claude Haiku 5.5 with a forced `submit_assessment` tool call → zod validation → retry once [D3] → `final = max(floor, AI)`.
+- `PATCH /api/assessments/{id}/override`, Out-of-date check [D2], new assessment starts with no override [D6].
+- Assessment panel on the tool page: Not assessed · Running · Complete · Not enough information · Out of date · Error with Try again.
+- Unit tests (Vitest) and the AI eval (`npm run eval`) [D7]. The eval runs the same pipeline function as the Assess button, so it tests exactly what users get.
+
+**Decisions (plan review; recorded in [tech spec §10](tech-spec-ai-assessment.md#10-resolved-in-plan-review-nov-23))**
+- A. Test runner: **Vitest** (used v4: v5 needed newer Node type definitions than the project has; 0 existing packages changed).
+- B. Both AI attempts time out → **504** "took too long" (not 502), so slowness and outages stay separate in metrics.
+- C. Override: **newest complete assessment only; a second override replaces the first.** Enforced in the app and in the database.
+- Kept the spec's forced tool call even though it skips Haiku's thinking step; the eval showed no under-rating, so no change needed.
+
+**Test results**
+- Unit tests: **45/45 pass** (floor for every data type, `max()`, 12 kinds of bad AI output rejected, thin input, out of date, override input).
+- Acceptance checks (by hand): **8/8 pass** — not assessed, happy path, floor, double-click, out of date, not enough info, override, AI down (invalid key → "Assessment unavailable, your tool is saved, try again").
+- Not testable by hand: the 60 s browser timeout (simulate in Stage 5).
+
+**AI eval** — model `claude-haiku-5-5`, prompt `v1`, Nov 23, 2026 (run twice, both passed; ≈ $0.003 per run)
+
+| # | Test tool | Expected | AI level | Floor | Final | Time (s) | Result |
+|---|---|---|---|---|---|---|---|
+| E1 | ChatGPT (free), public info | Low (Medium OK) | Low | none | Low | 2.2 | ✅ |
+| E2 | Otter.ai, client meetings | ≥ Medium (High OK) | High | Medium | High | 2.4 | ✅ |
+| E3 | Public chatbot, customer emails | High | High | Medium | High | 2.4 | ✅ |
+| E4 | GitHub Copilot, source code | Medium (High OK) | Medium | Medium | Medium | 2.7 | ✅ |
+| E5 | Physio clinic scheduler, health data | High | High | High | High | 2.3 | ✅ |
+| E6 | ChatGPT, purpose "writing" | Insufficient info | (code check, no AI call) | — | Insufficient info | 0.0 | ✅ |
+
+**Ship gate: PASS** — 0 under-ratings, 6/6 within range, E6 insufficient info. ~2.5 s per assessment vs. the 30 s target.
+- Gap: the floor never had to raise a level (Claude was always at or above it), so that path is covered by unit tests only. Add an eval case designed to trigger it in Stage 5.
+- E3 reached High on the AI's judgment (its floor is only Medium): the prompt's "personal data + free/public tool → High" rule did that work.
+
+**Found in acceptance testing: override confirmation too subtle (UX fix)**
+- **Problem:** after saving an override, nothing clearly confirmed it; the level-chip error was easy to miss.
+- **Fix:** a "Override saved — Medium, by <name>, <time>" message at the top of the panel (moss success style, hides after 5 s, announced to screen readers); the override box briefly highlights; Save stays disabled until a level is chosen and the reason has 10+ characters, with a hint saying what's missing; the level error is a prominent red box with red chip borders.
+- **Lesson:** acceptance criteria said "the override is shown", which was technically met; testing as a user showed it wasn't *noticeable*. Functional ≠ usable.
+
+**Concepts learned**
+- Structured output: forcing the AI to answer through a tool whose inputs follow a JSON schema, then validating it anyway.
+- Defense in layers: code rules before (thin input) and after (floor) the AI; app checks plus database constraints.
+- Column-level grant: permission to update only specific columns of a table.
+- Timeouts and retry budgets: per-attempt limit, total budget, and turning off the SDK's hidden retries.
+- Unit test vs. eval: unit tests check code logic (free, offline); evals check AI judgment against known answers (real calls, cost money).
+- Regression: tests that catch a future change breaking something that used to work.
+
+**TPM concepts**
+- Tech spec as source of truth for an AI coding agent; decisions tagged [D#] and traced into code and the commit message.
+- Plan review before build: the agent surfaced ambiguities (A–H) for me to decide instead of guessing.
+- Ship gate / release criteria defined before the result is known.
+- Usability vs. acceptance criteria: a criterion can pass while the experience still fails.
+
+**What went wrong**
+- Vitest 5 wouldn't install (dependency conflict) → used Vitest 4 after checking nothing else changed.
+- First eval run passed but Vitest hid the results table → re-ran with console output on (extra ≈ $0.003).
+- Type and lint errors caught by automated checks before my testing (fixed in minutes).
+- GitHub CLI (`gh`) isn't installed, so the PR was opened in the browser.
+- Override confirmation UX (above).
+
+---
+
+## Nov 23, 2026 — Where to resume
+**State:** T2 built, tested (unit 45/45, acceptance 8/8, eval ship gate PASS) and pushed on `feat/t2-assessment`; PR open, **not yet merged**.
+
+**Resume here:**
+1. Merge the T2 PR on GitHub, then `git checkout main && git pull`.
+2. Start T3 (view the register) on `feat/t3-register`: plan first, wait for approval.
+3. Cleanup noted for later: `tools.data_types_changed_at` is unused since spec 3.6.
