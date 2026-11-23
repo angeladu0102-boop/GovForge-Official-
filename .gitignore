@@ -25,3 +25,6 @@ next-env.d.ts
 
 # Debug logs
 npm-debug.log*
+
+# Claude Code personal settings (never commit)
+.claude/settings.local.json

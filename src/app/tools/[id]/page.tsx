@@ -2,8 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { AssessmentPanel } from "@/components/assessment-panel";
 import { LocalDate } from "@/components/local-date";
 import { ToolForm } from "@/components/tool-form";
+import { isOutOfDate } from "@/lib/assessment";
+import { getCurrentAssessment } from "@/lib/assessments-db";
 import { getCurrentMember } from "@/lib/auth";
 import { getTool } from "@/lib/tools-db";
 import type { ToolInput } from "@/lib/tools";
@@ -29,6 +32,8 @@ async function ToolDetail({ params, searchParams }: PageProps<"/tools/[id]">) {
   const { saved } = await searchParams;
   const tool = await getTool(id);
   if (!tool) notFound(); // also covers another organization's tool
+  const assessment = await getCurrentAssessment(tool.id);
+  const outOfDate = assessment ? isOutOfDate(tool, assessment.inputsSnapshot) : false; // [D2]
 
   const initial: ToolInput = {
     name: tool.name,
@@ -47,10 +52,8 @@ async function ToolDetail({ params, searchParams }: PageProps<"/tools/[id]">) {
         <div>Last updated <span className="text-ink"><LocalDate iso={tool.updatedAt} withTime /></span></div>
       </dl>
       {saved && <p className="mt-6 border-l-2 border-moss bg-moss/8 px-3 py-2 text-sm text-moss">Changes saved.</p>}
-      <div className="mt-6 border border-dashed border-ink/20 px-4 py-3 text-sm text-ink/50">
-        Risk assessment arrives in ticket T2.
-      </div>
-      <h2 className="mt-12 font-display text-2xl text-ink">Edit details</h2>
+      <AssessmentPanel key={assessment?.id ?? "none"} toolId={tool.id} initial={assessment} outOfDate={outOfDate} />
+      <h2 id="edit" className="mt-12 scroll-mt-6 font-display text-2xl text-ink">Edit details</h2>
       <div className="mt-6"><ToolForm mode="edit" initial={initial} toolId={tool.id} /></div>
     </>
   );

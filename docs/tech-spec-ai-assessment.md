@@ -170,3 +170,9 @@ Local build and test on `feat/t2-assessment` → PR → merge. Goes live with th
 - Server-side double-click guard (V1 relies on the button lock).
 - Should floor rules be editable per organization? (V2, needs roles.)
 - Map controls to NIST AI RMF functions (Govern/Map/Measure/Manage)? Useful for the KPMG/consulting audience; V2.
+
+## 10. Resolved in plan review (Nov 23)
+Decided by Angela when approving the [T2 build plan](plans/t2-plan.md):
+- **A. Test runner:** Vitest (one dev dependency; runs TypeScript with no setup).
+- **B. Both AI attempts time out:** `504` "Took too long, try again" (not `502`), so slowness and outages stay separate in metrics. Your tool is still saved.
+- **C. Override scope:** only the tool's newest assessment can be overridden, and only if it is `complete`. A second override replaces the first (V1 keeps no override history within one assessment).
