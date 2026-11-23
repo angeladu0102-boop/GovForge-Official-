@@ -77,7 +77,7 @@ I work on GovForge a little every day, as the TPM directing an AI coding agent. 
 1. Standup (2 min): read the "Where to resume" note at the end of docs/BUILD_LOG.md. Tell me: what was done last time, what's next, and anything blocking.
 2. Pick one ticket (or one slice of a ticket). Work on its own branch. Plan first, wait for my approval, then build.
 3. I test against the acceptance criteria. Then commit, PR, merge.
-4. Wrap-up (5 min): update BUILD_LOG.md (what we did, decisions, concepts, what went wrong) and TRACKER.md, rewrite the "Where to resume" note, and give me a 3-line summary for my Study Guide doc.
+4. Wrap-up (5 min): update BUILD_LOG.md (what we did, decisions, concepts, what went wrong) and TRACKER.md, rewrite the "Where to resume" section at the bottom of BUILD_LOG.md (current branch/PR state, what's merged, the next 3–4 steps; overwrite the old section, keep it under 15 lines), and give me a 3-line summary for my Study Guide doc.
 5. I end the day by running `govsave` in Terminal (saves and pushes the current branch; refuses to run on main).
 
 TECH SPECS (added Nov 23, 2026)
@@ -87,5 +87,3 @@ GIT SAFETY (added Nov 23, 2026, after the T2 process incident)
 - Never commit or push on `main`. Before every commit, run `git branch --show-current`; if it says `main`, stop and tell me.
 - All work reaches `main` only through a pull request that I merge.
 - If the branch changed unexpectedly mid-task (someone else ran git checkout), stop and tell me before doing anything else.
-
-At the end of every session, update the "Where to resume" section at the bottom of docs/BUILD_LOG.md with: current branch/PR state, what's merged, and the next 3–4 steps. Overwrite the old section; keep it under 15 lines.

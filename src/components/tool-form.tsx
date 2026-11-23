@@ -5,7 +5,7 @@
 // 3. Read the status code: 201/200 success, 400 field problems, 409 duplicate, 401 signed out.
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { DATA_TYPES, toFieldErrors, toolInputSchema, type FieldErrors, type ToolInput } from "@/lib/tools";
 
 type Props =
@@ -21,6 +21,19 @@ export function ToolForm({ mode, initial, toolId }: Props) {
   const [formError, setFormError] = useState<string | null>(null);
   const [duplicateId, setDuplicateId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  // B1: Next.js (cacheComponents) hides pages instead of removing them, so a form keeps
+  // what was typed. This cleanup runs when the page is hidden: "Add tool" always reopens blank.
+  useLayoutEffect(() => {
+    if (mode !== "create") return;
+    return () => {
+      setValues(EMPTY);
+      setErrors({});
+      setFormError(null);
+      setDuplicateId(null);
+      setSaving(false);
+    };
+  }, [mode]);
 
   function set<K extends keyof ToolInput>(key: K, value: ToolInput[K]) {
     setValues((v) => ({ ...v, [key]: value }));
