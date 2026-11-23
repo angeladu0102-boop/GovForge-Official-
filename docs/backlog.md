@@ -11,6 +11,7 @@ Ideas and issues not in the current ticket. Each becomes a ticket only when Ange
 | B4 | **Data-type options show an empty checkbox before selection**, so it's clear where to click. | UX (T1 form) | The box is there but nearly invisible until selected; make the unchecked box clearly visible. Reuses the existing `chip` style. | Quick win |
 | B6 | **Check the edit form for the same stale-state issue.** | Possible bug (T1) | Found while fixing B1. If you leave an edit form with unsaved changes and come back, the old typing may still show. Not seen in testing yet; confirm first. | Low: verify first |
 | B5 | **Whole register row is clickable**, with a highlight on hover (the rest of the table dims). | UX | Keep a real link inside the row so keyboard and screen-reader users can still reach each tool. Dimming should respect "reduce motion". | Medium |
+| B7 | ✅ **Fixed Nov 23 (`fix/b7-assess-spinner`).** **No visible spinner while an assessment runs.** | Bug (T2) | Found in the Stage 5 timeout test: the spinner lived inside the Assess button, which was hidden while running, leaving only a faint grey line for up to 55 s. Fix: the button stays visible (disabled, spinner + "Assessing…"), and the status line is easier to see. | Done |
 
 ## Known limits from the T3 self-review (Nov 23, 2026)
 | # | Item | Notes |

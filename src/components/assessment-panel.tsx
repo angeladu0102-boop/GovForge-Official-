@@ -88,7 +88,8 @@ export function AssessmentPanel({ toolId, initial, outOfDate: initialOutOfDate }
     <section aria-labelledby="assessment-heading" className="mt-8 border border-ink/15 bg-white/40 px-5 py-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="assessment-heading" className="font-display text-2xl text-ink">Risk assessment</h2>
-        {assessment && !running && assessButton("Re-assess")}
+        {/* B7: the button stays visible (disabled) while running, so its spinner is seen. */}
+        {assessment && assessButton("Re-assess")}
       </div>
 
       {/* Always rendered, so screen readers announce the message when it appears. */}
@@ -101,7 +102,9 @@ export function AssessmentPanel({ toolId, initial, outOfDate: initialOutOfDate }
       </div>
 
       {running && (
-        <p className="mt-3 text-sm text-ink/60" role="status">Assessing… Usually under 30 seconds.</p>
+        <p className="mt-3 border-l-2 border-ink/30 bg-ink/[0.04] px-3 py-2 text-sm text-ink" role="status">
+          Assessing… Usually under 30 seconds. Your tool is already saved.
+        </p>
       )}
 
       {error && !running && (
@@ -111,9 +114,9 @@ export function AssessmentPanel({ toolId, initial, outOfDate: initialOutOfDate }
         </div>
       )}
 
-      {!assessment && !running && (
+      {!assessment && (
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <span className="font-mono text-xs uppercase tracking-[0.14em] text-ink/50">Not assessed</span>
+          {!running && <span className="font-mono text-xs uppercase tracking-[0.14em] text-ink/50">Not assessed</span>}
           {assessButton("Assess")}
         </div>
       )}
