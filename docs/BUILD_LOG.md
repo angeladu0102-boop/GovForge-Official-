@@ -310,11 +310,43 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 
 ---
 
+## Nov 23, 2026 — Stage 5: Test (deploy gate)
+**What we did:** Ran the gate before deploying, on `test/stage-5`. Result in [test-results.md](test-results.md): **Deploy gate: PASS**.
+- Unit tests 60/60 (8 new): floor raises a low AI answer, timeout + retry, outage, and the Assess route returns 504/502 without saving anything.
+- AI eval E1–E6 (real Claude) PASS, 0 under-ratings. New E7 floor case uses a **stubbed AI** ("Low" + Health data → High): in every real case the AI was already at or above the floor, so a real input that needs raising would be rare and flaky.
+- Two-org isolation: second test account in "Test Org B". `npm run check:orgs` 12/12 (database/RLS, both directions); 6/6 API checks by hand as user B (all 404, A's data unchanged).
+- Timeout: pointed the app at a server that never answers. Server answered "took too long" (504) after 52 s, but **no spinner was visible** → bug B7, fixed on its own branch (PR #7), retest 5/5.
+- Decision 007: removing a tool = archive, not delete (B2 decided, build after deploy).
+
+**Decisions**
+- [Decision 007](decisions/007-archive-not-delete.md): archive (soft delete), because assessments are audit evidence.
+- E7 via stub, not a real input (deterministic, free, doesn't break when the AI improves).
+- B7: fix before deploy (option A), as its own bug branch and PR.
+
+**Concepts learned**
+- Stub/fake: replaces something slow, costly or random (the AI) with a fixed answer so a test always behaves the same.
+- Unit vs. integration: unit tests check one piece with fakes; the two-org check hits the real database.
+- Regression: rerunning old tests after a change to confirm nothing broke (60/60 after merging B7).
+- Eval: graded test of AI output quality against expected ranges.
+
+**TPM concepts**
+- Deploy gate / go-no-go: a written pass/fail line that decides whether we ship.
+- Risk-based testing: test the riskiest behaviors (data isolation, AI under-rating, AI slow) hardest.
+- Criteria can pass while the experience fails: the timeout criterion was met on the server, but users saw nothing (B7).
+
+**What went wrong**
+- Vitest's `vi.fn()` falsely failed 3 timeout tests although our code handled the errors; replaced with a hand-written fake.
+- Eval ran 3 times (~$0.01) because Vitest hid the results table when not in an interactive terminal.
+- First test server never started (Next.js allows one dev server per folder); I reported it as ready without checking. Now I check the page actually loads.
+- Test account passwords were shared in the chat; change them before sharing the deployed app.
+
+---
+
 ## Nov 23, 2026 — Where to resume
-**State:** B1 fix committed and pushed on `fix/b1-blank-form`; PR to open and merge (GitHub CLI not installed, so use the browser). T1–T3 merged in `main`.
+**State:** Stage 5 done, **Deploy gate: PASS**. Work on `test/stage-5` (pushed; PR to open and merge). `main` has T0–T3, B1 (PR #6), B7 (PR #7).
 
 **Resume here:**
-1. Open and merge the B1 PR, then `git checkout main && git pull`.
-2. Decide B2 (delete): hard delete vs. archive (audit history). Write a decision record.
-3. Quick wins if wanted: B3 tool count, B4 visible checkboxes; B6 verify edit form.
-4. Stage 5 (Test): 60 s timeout simulation, an eval case that triggers the floor, a two-organization check, `docs/test-results.md`.
+1. Open and merge the `test/stage-5` PR, then `git checkout main && git pull`.
+2. Change the passwords of both test accounts (A and Test User B) in Supabase, and update `.env.local`.
+3. Stage 6 (Deploy): hosting options (e.g. Vercel), environment variables in the host, deploy, test the live link.
+4. After deploy: build B2 (archive, Decision 007); quick wins B3, B4.
