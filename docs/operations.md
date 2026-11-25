@@ -14,4 +14,4 @@
 ### Rotation log
 | Date | Key | Done by | Notes |
 |---|---|---|---|
-| | | | |
+| Nov 26, 2026 | Test accounts A and B (Supabase passwords) | Claude Code (directed by Ang) | Shared in chat in Stage 5. Rotated with `scripts/rotate-test-passwords.mjs` ([Decision 008](decisions/008-rotate-test-passwords-admin-api.md)); old rejected, new verified, `check:orgs` 12/12. Service role key removed from `.env.local` after. |
