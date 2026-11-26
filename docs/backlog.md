@@ -20,3 +20,9 @@ Ideas and issues not in the current ticket. Each becomes a ticket only when Ange
 | K2 | If the assessments query fails, the whole register fails instead of showing tools as "risk unknown". | The AI being down is already handled; this is only for database errors. About 10 lines to harden. |
 | K3 | "Newest assessment" compares timestamps as text. | Correct for Supabase's format; comparing real dates would be more robust. |
 | K4 | `tools.data_types_changed_at` is unused since tech spec 3.6. | Cleanup migration later. |
+
+## From Stage 6 deploy (Nov 26, 2026)
+| # | Item | Type | Notes | Suggested priority |
+|---|---|---|---|---|
+| B9 | **Signed-in user with no organization sees a blank register; saving fails with "Not signed in".** | Bug (UX) | Found in the prod smoke test. Show "Your account isn't in an organization yet. Ask your admin." and return 403 (not 401) from the API. Also: the `[auth]` warning writes the user's email to server logs; log the user ID only (privacy). | **Next** (small, seen in prod) |
+| B8 | **Make the Supabase variables server-only** (drop `NEXT_PUBLIC_`). | Tech debt / security hygiene | The code only reads them on the server. Touches dev, prod, preview settings and the scripts; do with a checklist. | Later |
