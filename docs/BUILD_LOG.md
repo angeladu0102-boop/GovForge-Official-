@@ -393,6 +393,20 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 
 ---
 
+## Nov 26, 2026 — Docs checked against code before v1.0
+**What we did:** Fact-checked the docs against the code, git history and the live site, then fixed 7 drift items (on `docs/v1-cleanup`):
+1. `architecture.md`: `data_types_changed_at` marked unused since tech spec 3.6 (backlog K4).
+2. `architecture.md`: Assess timeout is 504 over **55 s** (was "60 s"; code `SERVER_BUDGET_MS = 55_000`).
+3. `architecture.md`: `events` table marked "Planned for Stage 7 (not built yet)".
+4. `PRD.md`: out-of-date rule widened to any input sent to the AI (tech spec D2, Nov 23); correction note added at the top.
+5. `decisions/003`: marked partly superseded by Decision 010.
+6. `TRACKER.md`: PRs #1–#10, noting that T2 had no PR.
+7. `backlog.md` B9: corrected (the header already shows the message; the gaps are the empty register area and 401 instead of 403).
+
+**TPM concept:** documentation drift: docs and code diverge unless someone checks. Checking before a release (v1.0) keeps the docs trustworthy as evidence.
+
+---
+
 ## Nov 26, 2026 — Where to resume
 **State:** Stages 0–6 done and merged (PRs #1–#10). Live: **https://govforge-app.vercel.app**. This handoff is on `docs/handoff-nov26` (merge its PR).
 

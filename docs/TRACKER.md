@@ -21,7 +21,7 @@ At-a-glance status of GovForge through the product lifecycle. Narrative detail l
 - [x] Tech spec (AI assessment)
 - [x] Tickets with acceptance criteria
 - [x] Architecture diagram, data model, API spec
-- [x] Merged pull requests per ticket (#1–#9)
+- [x] Merged pull requests (#1–#10); every ticket except T2, which reached `main` without a PR (see the Nov 23 process incident in [BUILD_LOG](BUILD_LOG.md))
 - [x] Test suite + AI eval results table ([test-results.md](test-results.md))
 - [x] Live deployed link ([govforge-app.vercel.app](https://govforge-app.vercel.app))
 - [ ] Metric query + explanation

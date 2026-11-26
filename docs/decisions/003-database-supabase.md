@@ -1,6 +1,6 @@
 # Decision 003: Database — Supabase (hosted Postgres) from day one
 
-**Date:** Nov 20, 2026 · **Stage:** 3 Design · **Status:** Decided
+**Date:** Nov 20, 2026 · **Stage:** 3 Design · **Status:** Decided · Partly superseded by [Decision 010](010-separate-production-database.md) (separate production project).
 
 ## Decision
 Use Supabase (hosted Postgres) for both local development and production.

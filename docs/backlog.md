@@ -24,6 +24,6 @@ Ideas and issues not in the current ticket. Each becomes a ticket only when Ange
 ## From Stage 6 deploy (Nov 26, 2026)
 | # | Item | Type | Notes | Suggested priority |
 |---|---|---|---|---|
-| B9 | **Signed-in user with no organization sees a blank register; saving fails with "Not signed in".** | Bug (UX) | Found in the prod smoke test. Show "Your account isn't in an organization yet. Ask your admin." and return 403 (not 401) from the API. Also: the `[auth]` warning writes the user's email to server logs; log the user ID only (privacy). | **Next** (small, seen in prod) |
+| B9 | **Signed-in user with no organization: empty register area, and saving returns 401 "Not signed in" (should be 403).** | Bug (UX) | Found in the prod smoke test. The header already shows "Your account isn't linked to an organization yet."; the real gaps are the empty register area (show the same message there) and the API status (return 403, since the user *is* signed in but not allowed). Also: the `[auth]` warning writes the user's email to server logs; log the user ID only (privacy). | **Next** (small, seen in prod) |
 | B10 | **Custom domain** (e.g. govforge.com, about $10–15 a year). | Idea | Only once GovForge is shared beyond interviews. Free address in use: govforge-app.vercel.app. | Later |
 | B8 | **Make the Supabase variables server-only** (drop `NEXT_PUBLIC_`). | Tech debt / security hygiene | The code only reads them on the server. Touches dev, prod, preview settings and the scripts; do with a checklist. | Later |

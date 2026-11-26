@@ -50,7 +50,7 @@ flowchart LR
 | owner_id | uuid | → members.user_id; set to whoever adds it |
 | created_at | timestamp | "Date added" |
 | updated_at | timestamp | "Last updated" |
-| data_types_changed_at | timestamp | Used to mark older assessments "Out of date" |
+| data_types_changed_at | timestamp | Unused since tech spec 3.6 (backlog K4) |
 
 ### `assessments`
 | Field | Type | Notes |
@@ -74,7 +74,7 @@ flowchart LR
 
 A tool's **current assessment** is its newest row. It's **Out of date** when the tool's current name, vendor, purpose or data types differ from `inputs_snapshot` (tech spec 3.6; `data_types_changed_at` no longer needed). Extra columns (`ai_level`, `floor_level`, `floor_reason`, `prompt_version`, `duration_ms`) are in the [tech spec](tech-spec-ai-assessment.md#38-data-model-changes-assessments-migration-003_assessmentssql). Keeping old rows means "assessment history" (a Should) is nearly free later.
 
-*Added in Stage 7:* an `events` table for tracking (assessment created, register viewed).
+*Planned for Stage 7 (not built yet):* an `events` table for tracking (assessment created, register viewed).
 
 ## API endpoints (REST)
 
@@ -86,7 +86,7 @@ All endpoints require sign-in. Not signed in → **401**.
 | `POST /api/tools` | Add a tool | 201 Created | 400 missing/invalid field · 409 duplicate name |
 | `GET /api/tools/{id}` | One tool with its current assessment | 200 | 404 not found (or other org) |
 | `PATCH /api/tools/{id}` | Edit a tool | 200 | 400 · 404 · 409 duplicate name |
-| `POST /api/tools/{id}/assess` | Run the AI assessment | 201 (complete or insufficient info) | 404 · 502 AI unavailable/invalid output · 504 over 60 s |
+| `POST /api/tools/{id}/assess` | Run the AI assessment | 201 (complete or insufficient info) | 404 · 502 AI unavailable/invalid output · 504 over 55 s |
 | `PATCH /api/assessments/{id}/override` | Reviewer override with reason | 200 | 400 missing reason/invalid level · 404 |
 
 ## Environment variables
