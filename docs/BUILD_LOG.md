@@ -358,7 +358,7 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 ---
 
 ## Nov 26, 2026 — Stage 6: Deploy
-**What we did:** GovForge is live at **https://gov-forge-official-uo7b.vercel.app**.
+**What we did:** GovForge is live at **https://govforge-app.vercel.app** (free Vercel address; the first address, gov-forge-official-uo7b.vercel.app, forwards to it).
 - Hosting: Vercel, connected to GitHub. Every merge to `main` deploys.
 - New Supabase project `govforge-prod` (East US): built from the same 4 migration files, with public sign-up off and one admin-created account. Smoke-check query 4/4 tables, 4/4 RLS, 8 policies, 0 test rows.
 - Three environments, each with its own keys: local and preview use dev; production uses prod. Release checklist, environments table and incident log in [operations.md](operations.md).
@@ -389,14 +389,17 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 - Whole site 500: following a Vercel warning, `NEXT_PUBLIC_` was removed from the variable name, so the code found nothing. Renamed back.
 - Blank register: the recreated prod account (switched from a fake email to a real one) had no `members` row. Provisioned with SQL; found bug B9.
 - The dev Claude key was pasted into the chat while fixing a Vercel warning. Rotated within minutes: new key verified, old key confirmed rejected (401).
+- A duplicate Vercel project (the repo imported twice, with no variables) served 500s while GitHub showed green checks. Deleted. Lesson: a green check means it built, not that it works.
 
 ---
 
 ## Nov 26, 2026 — Where to resume
-**State:** Stage 6 done: live at https://gov-forge-official-uo7b.vercel.app. `main` has everything through PR #9. Stage 6 docs are on `chore/stage-6-deploy` (PR to open and merge; check its preview link signs in with test account A).
+**State:** Stages 0–6 done and merged (PRs #1–#10). Live: **https://govforge-app.vercel.app**. This handoff is on `docs/handoff-nov26` (merge its PR).
 
-**Resume here:**
-1. Merge the `chore/stage-6-deploy` PR, then `git checkout main && git pull`. Run the after-merge smoke test (operations.md).
-2. B9: clear message for a signed-in user with no organization (small; seen in prod).
-3. Stage 7 (Operate): 2 events (assessment created, register viewed), 1 SQL metric, README case study + /case-study page, LinkedIn draft.
-4. Then B2 (archive), B3/B4 quick wins. Before each interview: open the live app the day before (Supabase pauses idle projects).
+**Portfolio gaps, in order** (see TRACKER checklist):
+1. **README case study.** Needed first for job applications; Discovery marked "in progress", honestly.
+2. **B9:** clear message for a user with no organization. Fix *before* interviews (Claude Code).
+3. **Interviews:** 0 of 12. Run 3+ with the live app; synthesize; update the PRD's H1–H3.
+4. **Stage 7:** 2 events, 1 SQL metric, /case-study page, LinkedIn post (after the interview insights).
+
+**Where to work:** code changes (B9, Stage 7, /case-study page) in Claude Code in this folder. Writing (README draft, interview script, synthesis, LinkedIn) can happen in the Claude app; bring the results back into this repo as files.
