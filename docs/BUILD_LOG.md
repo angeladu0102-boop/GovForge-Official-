@@ -342,11 +342,61 @@ H3 is the riskiest because if it's wrong, the core feature has no buyer, even if
 
 ---
 
-## Nov 23, 2026 — Where to resume
-**State:** Stage 5 done, **Deploy gate: PASS**. Work on `test/stage-5` (pushed; PR to open and merge). `main` has T0–T3, B1 (PR #6), B7 (PR #7).
+## Nov 26, 2026 — Pre-deploy: test password rotation
+**What we did:** Rotated the passwords of test accounts A and B, which had been shared in chat on Nov 23. A one-off script (`scripts/rotate-test-passwords.mjs`) uses the Supabase admin API, generates random passwords, writes them only to `.env.local`, and never prints them. Old passwords are rejected and new ones work; `check:orgs` 12/12; leak scan 0 matches. PR #9.
+
+**Decisions:** [Decision 008](decisions/008-rotate-test-passwords-admin-api.md): admin-API script over SQL or reset emails.
+
+**Concepts learned**
+- Service role key: a master key that bypasses row-level security; held only for the run, then deleted (least privilege).
+- Hash: the database stores a one-way scramble of a password, so changing `.env.local` alone changes nothing.
+
+**TPM concepts:** credential rotation (prove the new works *and* the old fails); blast radius.
+
+**What went wrong:** The first run changed A's password, then failed to sign out sessions (the change had already ended them). The new password was saved first, so nothing was lost; fixed the order and reran.
+
+---
+
+## Nov 26, 2026 — Stage 6: Deploy
+**What we did:** GovForge is live at **https://gov-forge-official-uo7b.vercel.app**.
+- Hosting: Vercel, connected to GitHub. Every merge to `main` deploys.
+- New Supabase project `govforge-prod` (East US): built from the same 4 migration files, with public sign-up off and one admin-created account. Smoke-check query 4/4 tables, 4/4 RLS, 8 policies, 0 test rows.
+- Three environments, each with its own keys: local and preview use dev; production uses prod. Release checklist, environments table and incident log in [operations.md](operations.md).
+- Smoke test on prod (Ang): signed in, added and assessed 3 realistic tools (ChatGPT, Otter.ai, Microsoft 365 Copilot), all assessed successfully. Signed-out API calls return 401.
+
+**Decisions**
+- [Decision 009](decisions/009-hosting-vercel.md): Vercel (best Next.js support, previews, one-click rollback).
+- [Decision 010](decisions/010-separate-production-database.md): separate Supabase project for production.
+- [Decision 011](decisions/011-previews-use-dev.md): preview links use dev keys (staging).
+- Fix forward rather than roll back (no users yet). Backlog: B9 (no-organization message) next; B8 (server-only variable names) later.
+
+**Concepts learned**
+- Environments: separate copies (local, preview, production), each with its own data and keys.
+- Migration: a numbered file that changes the database's structure; never edit one that already ran, add a new one.
+- Seed and provisioning: the first rows a fresh database needs, and setting up a new user's access.
+- Environment variables: settings outside the code; names are a contract with the code; `NEXT_PUBLIC_` values are copied into the browser at build time, so a change needs a redeploy.
+- Config vs. Sensitive in Vercel: public-by-design values vs. write-only secrets.
+- Status codes seen live: 200, 307 (redirect to sign-in), 401 (not signed in), 404 (wrong path), 500 (server crashed).
+
+**TPM concepts**
+- Release management: smoke test, go/no-go, rollback vs. fix forward.
+- Staging: previews on the dev database, so testing never touches prod.
+- Observability: the user-facing message was generic on purpose; the server log showed the real cause.
+- Blameless incident log: record what broke and why the system allowed it.
+
+**What went wrong** (all in [operations.md → Incidents](operations.md#incidents))
+- Prod sign-in failed: the Supabase URL in Vercel had an extra path (server log: `404 Invalid path`).
+- Whole site 500: following a Vercel warning, `NEXT_PUBLIC_` was removed from the variable name, so the code found nothing. Renamed back.
+- Blank register: the recreated prod account (switched from a fake email to a real one) had no `members` row. Provisioned with SQL; found bug B9.
+- The dev Claude key was pasted into the chat while fixing a Vercel warning. Rotated within minutes: new key verified, old key confirmed rejected (401).
+
+---
+
+## Nov 26, 2026 — Where to resume
+**State:** Stage 6 done: live at https://gov-forge-official-uo7b.vercel.app. `main` has everything through PR #9. Stage 6 docs are on `chore/stage-6-deploy` (PR to open and merge; check its preview link signs in with test account A).
 
 **Resume here:**
-1. Open and merge the `test/stage-5` PR, then `git checkout main && git pull`.
-2. Change the passwords of both test accounts (A and Test User B) in Supabase, and update `.env.local`.
-3. Stage 6 (Deploy): hosting options (e.g. Vercel), environment variables in the host, deploy, test the live link.
-4. After deploy: build B2 (archive, Decision 007); quick wins B3, B4.
+1. Merge the `chore/stage-6-deploy` PR, then `git checkout main && git pull`. Run the after-merge smoke test (operations.md).
+2. B9: clear message for a signed-in user with no organization (small; seen in prod).
+3. Stage 7 (Operate): 2 events (assessment created, register viewed), 1 SQL metric, README case study + /case-study page, LinkedIn draft.
+4. Then B2 (archive), B3/B4 quick wins. Before each interview: open the live app the day before (Supabase pauses idle projects).
