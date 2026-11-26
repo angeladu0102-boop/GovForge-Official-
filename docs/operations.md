@@ -22,7 +22,7 @@
 |---|---|---|---|---|
 | Local (dev) | `localhost:3000` | dev | `govforge-local-2` (`.env.local`) | Test accounts A / B |
 | Preview (one per PR) | Vercel preview link on the PR | dev | `govforge-local-2` (Vercel Preview) | Test accounts A / B |
-| Production | https://gov-forge-official-uo7b.vercel.app | `govforge-prod` (East US) | `govforge-prod` (Vercel Production) | Admin-created accounts only (sign-up off) |
+| Production | https://govforge-app.vercel.app (old `gov-forge-official-uo7b.vercel.app` forwards here) | `govforge-prod` (East US) | `govforge-prod` (Vercel Production) | Admin-created accounts only (sign-up off) |
 
 Vercel variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (publishable key; **Config**, not Sensitive), `ANTHROPIC_API_KEY` (**Sensitive**). Names must match the code exactly. Never add the Supabase secret/service role key to Vercel.
 
@@ -56,3 +56,4 @@ Vercel variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (p
 | Nov 26, 2026 | Whole site 500 after redeploy | Launch only, no users | `NEXT_PUBLIC_` removed from the variable name after a Vercel warning; code found no URL | Renamed back, redeploy | Names are a contract with the code; B8 makes them server-only |
 | Nov 26, 2026 | Blank register, save refused | Launch only | New prod user had no `members` row | Ran the provisioning SQL | Provisioning steps above; B9 shows a clear message |
 | Nov 26, 2026 | Dev Claude key pasted into the AI chat | None seen; key revoked within minutes | A Vercel warning was copied together with the key value | Rotated (see rotation log) | Checklist: never paste values; copy only warning text. Secrets marked Sensitive |
+| Nov 26, 2026 | A second Vercel project (`gov-forge-official`) served 500 on every page | None (unshared address) | The repo had been imported into Vercel twice; the copy had no environment variables. GitHub showed both deploys green (a build check, not a working-site check) | Duplicate deleted (now 404) | One Vercel project per app; after-merge smoke test uses the real address |

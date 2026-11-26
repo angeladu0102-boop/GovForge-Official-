@@ -1,5 +1,7 @@
 # GovForge — PRD v0.1
 
+_v0.1 written Nov 20; corrected Nov 26 to match as-built._
+
 > Everything here is an assumption until interviews are done (0 of 12 completed as of Nov 20, 2026).
 
 ## Problem (assumption)
@@ -66,7 +68,7 @@ As an IT or operations lead, I want to add an AI tool my team uses to one shared
 As the person approving AI tools, I want an AI-generated risk assessment for a tool, so I get a consistent first view of its risk without waiting days.
 - Given a saved tool, when I click Assess, then within 30 seconds I see Low/Medium/High, 3–5 reasons tied to what I entered, and 3–5 recommended controls.
 - It's labeled "AI draft, review before relying on it" with the date and inputs used.
-- If I edit the tool's data types and save, the old assessment is marked "Out of date, re-assess".
+- If I edit any input sent to the AI (name, vendor, purpose or data types) and save, the old assessment is marked "Out of date, re-assess". *(Widened from data types only by the tech spec on Nov 23, D2.)*
 - **Failure cases:** too little information returns "Not enough information" and what to add (no guessed level); double-click is ignored while running; over 60 seconds stops with "Try again"; AI down shows "Assessment unavailable, your tool is saved, try again"; a reviewer can override the risk level with a reason, and the override is shown.
 
 ### 3. View the register
